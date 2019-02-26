@@ -1,8 +1,9 @@
 import Unsplash, { toJson } from "unsplash-js";
 import Model from "./model";
-import View from "./view";
+import CollectionsView from "./views/collectionsView";
+import CollectionView from "./views/collectionView";
+import ImgView from "./views/imgView";
 import Controller from "./controller";
-import Templates from "./templates";
 
 
 const unsplash = new Unsplash({
@@ -10,11 +11,20 @@ const unsplash = new Unsplash({
   secret: "cfed8222b1379678d0217f2ed136889d9dec5030457bec781fcf276c7f726f5c"
 });
 
-let el = document.getElementById('app');
+const el = document.getElementById('app');
 
-const templates = new Templates();
-const view = new View(el, templates);
+
+const collectionsView = new CollectionsView(el, 'Список коллекций', 'collections');
+const collectionView = new CollectionView(el, 'Список фотографий', 'collection');
+const imgView = new ImgView(el, '', 'image');
+
+const views = {
+  collections: collectionsView,
+  collection: collectionView,
+  img: imgView,
+};
+
 const model = new Model(unsplash);
-const controller = new Controller(view, model);
+const controller = new Controller(views, model);
 
 controller.showCollections();

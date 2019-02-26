@@ -1,11 +1,14 @@
 export  default class Controller {
-  constructor(view, model) {
+  constructor(views, model) {
     this.model = model;
-    this.view = view;
+    this.views = views;
+    this.showCollectionsView = this.views.collections.show.bind(this.views.collections);
+    this.showCollectionView = this.views.collection.show.bind(this.views.collection);
+    this.showImgView = this.views.img.show.bind(this.views.img);
     
-    view.bindClick(({target}) => {
+    views.collections.bindClick(({target}) => {
       if(target.className === 'collections__item') {
-        
+  
         this.showCollection(target.dataset.id);
   
         let state = {
@@ -15,10 +18,10 @@ export  default class Controller {
         this.setLocation(state, `collection=${target.dataset.id}`)
       }
       if(target.className === 'collection__item') {
-        this.showImage(target.dataset.id);
+        this.showImg(target.dataset.id);
         
         let state = {
-          method: 'showImage',
+          method: 'showImg',
           id: target.dataset.id
         };
         this.setLocation(state, `image=${target.dataset.id}`)
@@ -27,23 +30,21 @@ export  default class Controller {
     });
   
     window.onpopstate = this.popStateHendler.bind(this);
-    
-    this.state = {};
-    this.state.collections = [];
   }
+  
+  
   showCollections() {
-    this.model.getCollections(this.view.viewCollections.bind(this.view))
+    this.model.getCollections(this.showCollectionsView)
   }
-  showCollection(collectionId) {
-    this.model.getCollection( +collectionId, this.view.viewCollection.bind(this.view))
+  showCollection(id) {
+    this.model.getCollection(id, this.showCollectionView)
   }
-  showImage(imageId) {
-    this.model.getImage(imageId, this.view.viewImage.bind(this.view))
+  showImg(id) {
+    this.model.getImage(id, this.showImgView)
   }
   
   
   setLocation(state, curLoc){
-    
     history.pushState(state, null, curLoc);
     console.log(history.state)
   }

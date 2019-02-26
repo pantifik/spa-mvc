@@ -1,19 +1,29 @@
 
 export default class View{
-  constructor(parent, templates) {
+  constructor(parent, title, className) {
     this.parent = parent;
-    this.templates = templates;
+    this.title = title;
+    this.className = className;
   }
-  viewCollections(collections) {
-    this.render(this.templates.collections(collections));
+  
+  _titleHTML() {
+    return `<h3 class="title">${this.title}</h3><ul id="${this.className}">`
   }
-  viewCollection(collection) {
-    
-    this.render(this.templates.collection(collection));
+  
+  _itemHTML(id, text) {
+    return `<li>
+              <a href="#" class="${this.className}__item" data-id="${id}"> ${text}</a>
+            </li>`
   }
-  viewImage(imageData) {
-    
-    this.render(this.templates.image(imageData));
+  
+  _createView(collections){
+    let html = this._titleHTML();
+    html += `<ul>`;
+    collections.forEach((item) => {
+      html += this._itemHTML(item.id, item.title)
+    });
+    html += '</ul>';
+    return html;
   }
   
   bindClick(hendler){
@@ -23,7 +33,7 @@ export default class View{
     })
   }
   
-  render(view) {
-    this.parent.innerHTML = view;
+  show(collection) {
+    this.parent.innerHTML = this._createView(collection);
   }
 }
