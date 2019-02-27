@@ -1,6 +1,9 @@
+import {setLocation} from './libs/helpers'
+
 export  default class Controller {
-  constructor(views, model) {
-    this.model = model;
+  constructor(views, models) {
+    this.models = models;
+    
     this.views = views;
     this.showCollectionsView = this.views.collections.show.bind(this.views.collections);
     this.showCollectionView = this.views.collection.show.bind(this.views.collection);
@@ -8,23 +11,22 @@ export  default class Controller {
     
     views.collections.bindClick(({target}) => {
       if(target.className === 'collections__item') {
-  
-        this.showCollection(target.dataset.id);
-  
         let state = {
           method: 'showCollection',
           id: target.dataset.id
         };
-        this.setLocation(state, `collection=${target.dataset.id}`)
+        
+        this.showCollection(target.dataset.id);
+        setLocation(state, `collection=${target.dataset.id}`)
       }
       if(target.className === 'collection__item') {
-        this.showImg(target.dataset.id);
-        
         let state = {
           method: 'showImg',
           id: target.dataset.id
         };
-        this.setLocation(state, `image=${target.dataset.id}`)
+        
+        this.showImg(target.dataset.id);
+        setLocation(state, `image=${target.dataset.id}`)
       }
       
     });
@@ -34,20 +36,17 @@ export  default class Controller {
   
   
   showCollections() {
-    this.model.getCollections(this.showCollectionsView)
+    this.models.collections.unsplashRequest(this.showCollectionsView)
   }
   showCollection(id) {
-    this.model.getCollection(id, this.showCollectionView)
+    this.models.collection.unsplashRequest(id, this.showCollectionView)
   }
   showImg(id) {
-    this.model.getImage(id, this.showImgView)
+    this.models.img.unsplashRequest(id, this.showImgView)
   }
   
   
-  setLocation(state, curLoc){
-    history.pushState(state, null, curLoc);
-    console.log(history.state)
-  }
+  
   
   popStateHendler({state}){
     if(state) {
